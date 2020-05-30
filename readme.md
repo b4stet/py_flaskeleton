@@ -84,7 +84,13 @@ $ bash bin/cli.sh dev db_migration check
 $ bash bin/cli.sh dev db_migration apply
 ```
 
-### Run
+### Run application
 From project root:
 - for API: `bash bin/web.sh dev`
 - for CLI: `bash bin/cli.sh dev --help`
+
+### Run tests
+From root:
+```
+$ python3 -m unittest discover
+```
