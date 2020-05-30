@@ -1,0 +1,61 @@
+dev:
+    app:
+        debug: True
+        encryption_secret: <passphrase>
+        host: localhost
+        port: 8080
+
+    db:
+        host: localhost
+        port: 5432
+        name: my_db
+        user: my_user
+        password: <db_password>
+
+    logger:
+        name: flaskeleton
+        handlers: 
+            stdout: 
+                enabled: True
+                level: info
+            
+            file:
+                enabled: False
+                level: info
+                filename: <absolute_path_to_file>   
+
+            syslog:
+                enabled: False
+                level: error
+                address: /dev/log
+
+prod:
+    app:
+        debug: False
+        encryption_secret: <passphrase>
+        host: localhost
+        port: 8080
+
+    db:
+        host: localhost
+        port: 5432
+        name: my_prod_db
+        user: my_prod_user
+        password: <db_password>
+
+    logger:
+        name: flaskeleton
+        handlers: 
+            stdout: 
+                enabled: False
+                level: info
+            
+            file:
+                enabled: True
+                level: info
+                filename: <absolute_path_to_file>  
+
+            syslog:
+                enabled: True
+                level: error
+                address: /dev/log
