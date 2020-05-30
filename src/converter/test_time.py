@@ -37,7 +37,7 @@ class TestTimeConverter(unittest.TestCase):
         for dt in dt_wrong_format:
             with self.assertRaises(ValueError):
                 self.__time_converter.to_datetime(dt)
-                self.fail('ValueError not raised for input {}'.format(dt))
+                self.fail('ValueError not raised for date {}'.format(dt))
 
 
 if __name__ == '__main__':
