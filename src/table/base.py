@@ -22,6 +22,9 @@ class BaseTable():
             )
         return cursor
 
+    def _cursor(self):
+        return self.__db.cursor()
+
     def _commit(self):
         self.__db.connection().commit()
 

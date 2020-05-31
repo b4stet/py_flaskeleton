@@ -32,7 +32,7 @@ class DbMigratorTable(BaseTable):
         query += "applied_at TIMESTAMP WITH TIME ZONE NOT NULL)"
 
         # because create/alter table statement cannot be prepared, directly execute
-        self._cursor.execute(query)
+        self._cursor().execute(query)
         self._commit()
 
     def fetch_all(self):
@@ -57,7 +57,7 @@ class DbMigratorTable(BaseTable):
             query = fsql.read()
 
         # because create/alter table statement cannot be prepared, directly execute
-        self._cursor.execute(query)
+        self._cursor().execute(query)
 
     def finish_transaction(self, has_error):
         if has_error is True:

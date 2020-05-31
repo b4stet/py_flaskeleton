@@ -6,9 +6,10 @@ This example also illustrates usage of PostgreSQL without ORM.
 
 ## Requirements
 - postgresql
-- python3-psycopg2
+- python3-psycopg2 (from PostgreSQL repository)
 - python3-flask
 - python3-pycryptodome
+- python3-scrypt
 
 ## Project structure
 ### General

@@ -8,10 +8,11 @@ class UserEntity():
     NAME_CHARSET = ''.join(sorted(set(string.digits) | set(string.ascii_letters) | set('-_')))
     PASSWORD_CHARSET = ''.join(sorted(set(string.digits) | set(string.ascii_letters) | set('.+-*/?!_')))
 
-    def __init__(self, name, password, status, created_at=None, modified_at=None, user_id=None):
+    def __init__(self, name, password, salt, status, created_at=None, modified_at=None, user_id=None):
         self.__id = user_id
         self.__name = name
         self.__password = password
+        self.__salt = salt
         self.__status = status
         self.__created_at = created_at
         self.__modified_at = modified_at
@@ -25,6 +26,9 @@ class UserEntity():
     def get_password(self):
         return self.__password
 
+    def get_salt(self):
+        return self.__salt
+
     def get_status(self):
         return self.__status
 
@@ -36,6 +40,10 @@ class UserEntity():
 
     def set_password(self, password):
         self.__password = password
+        return self
+
+    def set_salt(self, salt):
+        self.__salt = salt
         return self
 
     def set_status(self, status):

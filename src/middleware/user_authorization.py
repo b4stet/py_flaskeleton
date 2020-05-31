@@ -24,6 +24,6 @@ class UserAuthorizationMiddleware():
         if user.get_status() == UserEntity.STATUS_DISABLED:
             raise Forbidden('User {} is disabled.'.format(creds.username))
 
-        password = self.__hasher.hash(creds.password)
+        password, _ = self.__hasher.hash(creds.password, salt=user.get_salt())
         if password != user.get_password():
             raise Forbidden('Invalid password for user {}.'.format(creds.username))

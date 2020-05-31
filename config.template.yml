@@ -2,6 +2,7 @@ dev:
     app:
         debug: True
         encryption_secret: <passphrase>
+        anonymizer_salt: <32 long hex string>
         host: localhost
         port: 8080
 
@@ -33,6 +34,7 @@ prod:
     app:
         debug: False
         encryption_secret: <passphrase>
+        anonymizer_salt: <32 long hex string>
         host: localhost
         port: 8080
 

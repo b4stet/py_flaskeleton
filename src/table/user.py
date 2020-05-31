@@ -18,6 +18,7 @@ class UserTable(BaseTable):
             user_id=record['id'],
             name=name,
             password=record['password'],
+            salt=record['salt'],
             status=record['status'],
             created_at=record['created_at'],
             modified_at=record['modified_at'],
@@ -27,18 +28,19 @@ class UserTable(BaseTable):
         # no id: it's a new record
         if user.get_id() is None:
             name_encrypted, nonce = self.__crypter.encrypt(user.get_name())
-            name_hashed = self.__hasher.hash(user.get_name())
+            name_hashed = self.__hasher.anonymize(user.get_name())
 
-            query = "INSERT INTO user_account (name_hashed, name_encrypted, nonce, password, status, created_at, modified_at) "
-            query += "VALUES ($1,$2,$3,$4,$5,$6,$7)"
-            params = [name_hashed, name_encrypted, nonce, user.get_password(), user.get_status(), user.get_created_at(), user.get_modified_at()]
+            query = "INSERT INTO user_account (name_hashed, name_encrypted, salt, nonce, password, status, created_at, modified_at) "
+            query += "VALUES ($1,$2,$3,$4,$5,$6,$7,$8)"
+            params = [name_hashed, name_encrypted, user.get_salt(), nonce, user.get_password()]
+            params += [user.get_status(), user.get_created_at(), user.get_modified_at()]
             self._prepare_statement('insert_user', query)
             self._execute('insert_user', tuple(params))
 
         # id: it's an update
         else:
-            query = "UPDATE user_account SET password=$1, status=$2, modified_at=$3 WHERE id=$4"
-            params = [user.get_password(), user.get_status(), user.get_modified_at(), user.get_id()]
+            query = "UPDATE user_account SET password=$1, salt=$2, status=$3, modified_at=$4 WHERE id=$5"
+            params = [user.get_password(), user.get_salt(), user.get_status(), user.get_modified_at(), user.get_id()]
             self._prepare_statement('update_user', query)
             self._execute('update_user', tuple(params))
 
@@ -53,7 +55,7 @@ class UserTable(BaseTable):
         return results
 
     def fetch_by_name(self, name):
-        name_hashed = self.__hasher.hash(name)
+        name_hashed = self.__hasher.anonymize(name)
         query = "SELECT * FROM user_account WHERE name_hashed=$1"
         params = [name_hashed]
         self._prepare_statement('select_user_by_name', query)

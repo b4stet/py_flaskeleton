@@ -38,12 +38,15 @@ class UserBo():
 
         if user.get_password() is not None:
             result['password'] = user.get_password()
+            result['salt'] = user.get_salt()
 
         return result
 
     def __account2safe(self, user: UserEntity):
         user_safe = user
-        return user_safe.set_password(None)
+        user_safe = user_safe.set_password(None)
+        user_safe = user_safe.set_salt(None)
+        return user_safe
 
     def add_user(self, name, password):
         # verify account is new
@@ -52,9 +55,11 @@ class UserBo():
             raise ValueError('Cannot create {}, user already exists.'.format(name))
 
         # create
+        digest, salt = self.__hasher.hash(password)
         user = UserEntity(
             name=name,
-            password=self.__hasher.hash(password),
+            password=digest,
+            salt=salt,
             status=UserEntity.STATUS_ENABLED,
             created_at=datetime.now(timezone.utc),
             modified_at=datetime.now(timezone.utc)
@@ -70,7 +75,12 @@ class UserBo():
 
         # update fields
         if password is not None:
-            user = user.set_password(self.__hasher.hash(password))
+            if user.get_salt() == '_blank':
+                new_digest, salt = self.__hasher.hash(password)
+                user = user.set_salt(salt)
+            else:
+                new_digest, _ = self.__hasher.hash(password, user.get_salt())
+            user = user.set_password(new_digest)
 
         if status is not None:
             user = user.set_status(status)
