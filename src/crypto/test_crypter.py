@@ -15,7 +15,7 @@ class TestCrypter(unittest.TestCase):
         del self.__crypter
         mock.patch.stopall()
 
-    def test_encrypt(self):
+    def test_encrypt_with_nonce(self):
         nonce = get_random_bytes(16).hex()
         plains = [
             'plain_short',
@@ -31,6 +31,22 @@ class TestCrypter(unittest.TestCase):
                 self.fail('ValueError raised despite valid nonce {}.'.format(nonce))
             self.__mock_input_validator.check_type.assert_called_once_with(nonce, str)
             self.assertEqual(result_nonce, nonce, 'Expected nonce {}. Got {}'.format(nonce, result_nonce))
+            self.__mock_input_validator.reset_mock()
+
+    def test_encrypt_no_nonce(self):
+        plains = [
+            'plain_short',
+            'plain_____________________1block',
+            'plain_________________________long',
+        ]
+        self.__mock_input_validator.check_type.return_value = None
+
+        for plain in plains:
+            try:
+                result_cipher, result_nonce = self.__crypter.encrypt(plain)
+            except ValueError:
+                self.fail('ValueError raised despite nonce generated on the fly.')
+            self.__mock_input_validator.check_type.assert_called_once()
             self.__mock_input_validator.reset_mock()
 
     def test_encrypt_wrong_nonce_type(self):
