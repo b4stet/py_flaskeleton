@@ -85,10 +85,15 @@ $ bash bin/cli.sh dev db_migration check
 $ bash bin/cli.sh dev db_migration apply
 ```
 
+To connect to the db:
+```
+$ psql -U my_user -h localhost -p 5432 my_db
+```
+
 ### Run application
 From project root:
-- for API: `bash bin/web.sh dev`
-- for CLI: `bash bin/cli.sh dev --help`
+- API: `bash bin/web.sh dev`
+- CLI: `bash bin/cli.sh dev --help`
 
 ### Run tests
 From root:
