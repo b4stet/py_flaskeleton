@@ -2,6 +2,7 @@ from flask import g, current_app
 
 from src.crypto.crypter import Crypter
 from src.crypto.hasher import Hasher
+from src.validator.input import InputValidator
 
 
 class CryptoService():
@@ -14,7 +15,7 @@ class CryptoService():
     def register(self):
         if "crypto" not in g:
             g.crypto = {
-                'crypter': Crypter(self.__secret),
+                'crypter': Crypter(InputValidator(), self.__secret),
                 'hasher': Hasher()
             }
 
