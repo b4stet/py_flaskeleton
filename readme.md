@@ -10,6 +10,7 @@ This example also illustrates usage of PostgreSQL without ORM.
 - python3-flask
 - python3-pycryptodome
 - python3-scrypt
+- python3-coverage (optional, for coverage of unit tests)
 
 ## Project structure
 ### General
@@ -98,5 +99,7 @@ From project root:
 ### Run tests
 From root:
 ```
-$ python3 -m unittest discover
+$ python3 -m test_runner
+$ python3 -m coverage run test_runner.py
+$ python3 -m coverage report
 ```
