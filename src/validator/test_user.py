@@ -59,7 +59,7 @@ class TestUserValidator(unittest.TestCase):
             except ValueError:
                 self.fail('ValueError raised despite valid status {}.'.format(status))
 
-    def test_check_status_unkown(self):
+    def test_check_status_unknown(self):
         wrong_statuses = [
             True,
             False,
