@@ -5,8 +5,8 @@ import hashlib
 
 
 class Crypter():
-    def __init__(self, input_validator, secret):
-        self.__key = hashlib.sha256(secret.encode('utf-8')).hexdigest()
+    def __init__(self, input_validator, key):
+        self.__key = key
         self.__input_validator = input_validator
 
     def encrypt(self, plain, nonce=None):

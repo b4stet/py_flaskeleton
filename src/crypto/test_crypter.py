@@ -6,9 +6,10 @@ from src.crypto.crypter import Crypter
 
 class TestCrypter(unittest.TestCase):
     def setUp(self):
-        patcher = mock.patch('src.validator.input.InputValidator')
-        self.__mock_input_validator = patcher.start()
-        self.__crypter = Crypter(self.__mock_input_validator, 'secret')
+        input_validator_patcher = mock.patch('src.validator.input.InputValidator')
+        key = get_random_bytes(32).hex()
+        self.__mock_input_validator = input_validator_patcher.start()
+        self.__crypter = Crypter(self.__mock_input_validator, key)
 
     def tearDown(self):
         del self.__crypter
