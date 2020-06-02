@@ -99,7 +99,7 @@ From project root:
 ### Run tests
 From root:
 ```
-$ python3 -m test_runner
-$ python3 -m coverage run test_runner.py
+$ python3 -m runner_test
+$ python3 -m coverage run runner_test.py
 $ python3 -m coverage report
 ```
