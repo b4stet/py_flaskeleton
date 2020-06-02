@@ -1,9 +1,9 @@
-from src.table.base import BaseTable
+from src.table.abstract import AbstractTable
 from src.entity.db_migrator import DbMigratorEntity
 
 
-class DbMigratorTable(BaseTable):
-    def __dict2entity(self, record):
+class DbMigratorTable(AbstractTable):
+    def _dict2entity(self, record):
         if record is None:
             return None
 
@@ -39,7 +39,7 @@ class DbMigratorTable(BaseTable):
         self._prepare_statement('select_migration_all', "SELECT * from migration")
         migrations = self._execute('select_migration_all').fetchall()
 
-        results = [self.__dict2entity(migration) for migration in migrations]
+        results = [self._dict2entity(migration) for migration in migrations]
         return results
 
     def record_migration(self, migration: DbMigratorEntity):

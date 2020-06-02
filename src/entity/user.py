@@ -17,6 +17,23 @@ class UserEntity():
         self.__created_at = created_at
         self.__modified_at = modified_at
 
+    def to_dict(self):
+        return {
+            'id': self.__id,
+            'name': self.__name,
+            'status': self.__status,
+            'created_at': self.__created_at,
+            'modified_at': self.__modified_at,
+            'password': self.__password,
+            'salt': self.__salt
+        }
+
+    def to_safe(self):
+        safe = self
+        safe.set_password(None)
+        safe.set_salt(None)
+        return safe
+
     def get_id(self):
         return self.__id
 

@@ -1,14 +1,14 @@
-from src.table.base import BaseTable
+from src.table.abstract import AbstractTable
 from src.entity.user import UserEntity
 
 
-class UserTable(BaseTable):
+class UserTable(AbstractTable):
     def __init__(self, crypter, hasher, db_connector, logger):
         super().__init__(db_connector, logger)
         self.__crypter = crypter
         self.__hasher = hasher
 
-    def __dict2entity(self, record):
+    def _dict2entity(self, record):
         if record is None:
             return None
 
@@ -51,7 +51,7 @@ class UserTable(BaseTable):
         query = "SELECT * FROM user_account"
         self._prepare_statement('select_user_all', query)
         records = self._execute('select_user_all').fetchall()
-        results = [self.__dict2entity(record) for record in records]
+        results = [self._dict2entity(record) for record in records]
         return results
 
     def fetch_by_name(self, name):
@@ -61,7 +61,7 @@ class UserTable(BaseTable):
         self._prepare_statement('select_user_by_name', query)
         record = self._execute('select_user_by_name', tuple(params)).fetchone()
 
-        return self.__dict2entity(record)
+        return self._dict2entity(record)
 
     def fetch_by_id(self, user_id):
         query = "SELECT * FROM user_account WHERE id=$1"
@@ -69,4 +69,4 @@ class UserTable(BaseTable):
         self._prepare_statement('select_user_by_id', query)
         record = self._execute('select_user_by_id', tuple(params)).fetchone()
 
-        return self.__dict2entity(record)
+        return self._dict2entity(record)

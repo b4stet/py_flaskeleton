@@ -12,41 +12,20 @@ class UserBo():
 
     def get_by_name(self, name, full=False):
         user = self.__user_table.fetch_by_name(name)
+        if user is None:
+            return user
 
-        if user is not None and full is False:
-            user = self.__account2safe(user)
+        if full is False:
+            user = user.to_safe()
 
         return user
 
     def get_all(self, full=False):
         users = self.__user_table.fetch_all()
         if full is False:
-            users = [self.__account2safe(user) for user in users]
+            users = [user.to_safe() for user in users]
 
         return users
-
-    def entity2dict(self, user: UserEntity):
-        if user is None:
-            return {}
-
-        result = {
-            'name': user.get_name(),
-            'status': user.get_status(),
-            'created_at': self.__time_converter.to_str(user.get_created_at()),
-            'modified_at': self.__time_converter.to_str(user.get_modified_at()),
-        }
-
-        if user.get_password() is not None:
-            result['password'] = user.get_password()
-            result['salt'] = user.get_salt()
-
-        return result
-
-    def __account2safe(self, user: UserEntity):
-        user_safe = user
-        user_safe = user_safe.set_password(None)
-        user_safe = user_safe.set_salt(None)
-        return user_safe
 
     def add_user(self, name, password):
         # verify account is new
@@ -75,11 +54,7 @@ class UserBo():
 
         # update fields
         if password is not None:
-            if user.get_salt() == '_blank':
-                new_digest, salt = self.__hasher.hash(password)
-                user = user.set_salt(salt)
-            else:
-                new_digest, _ = self.__hasher.hash(password, user.get_salt())
+            new_digest, _ = self.__hasher.hash(password, user.get_salt())
             user = user.set_password(new_digest)
 
         if status is not None:

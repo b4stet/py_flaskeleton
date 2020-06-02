@@ -47,7 +47,7 @@ class DependenciesService():
             g.di_container = {
                 UserAuthorizationMiddleware: UserAuthorizationMiddleware(self.__hasher, user_bo, self.__logger).check,
                 GetIndexAction: GetIndexAction.as_view('get_index', self.__logger),
-                ListUsersAction: ListUsersAction.as_view('list_users', user_bo, self.__logger),
+                ListUsersAction: ListUsersAction.as_view('list_users', time_converter, user_bo, self.__logger),
                 DbManagerCli: DbManagerCli(migration_dir, migrator_bo, self.__logger),
                 UserManagerCli: UserManagerCli(input_validator, user_validator, time_converter, user_bo, self.__logger),
             }
