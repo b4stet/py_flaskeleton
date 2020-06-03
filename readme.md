@@ -2,7 +2,7 @@
 
 A skeleton for an API using Flask factory.  
 It follows the MVC pattern without any decorator.  
-This example also illustrates usage of PostgreSQL without ORM.
+This example also illustrates usage of PostgreSQL without ORM, as well as some unit tests.
 
 ## Requirements
 - postgresql
@@ -99,7 +99,7 @@ From project root:
 ### Run tests
 From root:
 ```
-$ python3 -m runner_test
-$ python3 -m coverage run runner_test.py
+$ python3 -m runner_tests
+$ python3 -m coverage run runner_tests.py
 $ python3 -m coverage report
 ```
