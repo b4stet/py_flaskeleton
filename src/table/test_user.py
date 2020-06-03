@@ -60,7 +60,7 @@ class TestUserTable(unittest.TestCase):
         # check
         cursor_execute_calls = mock_cursor.execute.call_args_list
         expected_args = ['PREPARE select_user_all', 'EXECUTE select_user_all']
-        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(len(cursor_execute_calls)))
+        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(mock_cursor.execute.call_count))
         for call, expected_arg in zip(cursor_execute_calls, expected_args):
             args, _ = call
             self.assertTrue(args[0].startswith(expected_arg), 'Expected call to cursor.execute() with {}. Got {}'.format(expected_arg, args[0]))
@@ -77,8 +77,8 @@ class TestUserTable(unittest.TestCase):
     def test_fetch_all(self):
         # prepare data
         users_expected = [
-            UserEntity(name='user1', password='password1', salt='salt1', status='status1'),
-            UserEntity(name='user2', password='password2', salt='salt2', status='status2'),
+            UserEntity(user_id=1, name='user1', password='password1', salt='salt1', status='status1'),
+            UserEntity(user_id=2, name='user2', password='password2', salt='salt2', status='status2'),
         ]
         records = []
         for user in users_expected:
@@ -100,7 +100,7 @@ class TestUserTable(unittest.TestCase):
         # check
         cursor_execute_calls = mock_cursor.execute.call_args_list
         expected_args = ['PREPARE select_user_all', 'EXECUTE select_user_all']
-        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(len(cursor_execute_calls)))
+        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(mock_cursor.execute.call_count))
         for call, expected_arg in zip(cursor_execute_calls, expected_args):
             args, _ = call
             self.assertTrue(args[0].startswith(expected_arg), 'Expected call to cursor.execute() with {}. Got {}'.format(expected_arg, args[0]))
@@ -108,7 +108,10 @@ class TestUserTable(unittest.TestCase):
         self.assertEqual(mock_cursor.fetchall.call_count, 1, 'Expected 1 call to cursor.fetchall(). Got {}'.format(mock_cursor.fetchall.call_count))
 
         crypter_decrypt_calls = self.__mock_crypter.decrypt.call_args_list
-        self.assertEqual(self.__mock_crypter.decrypt.call_count, 2, 'Expected 2 calls to crypter.decrypt(). Got {}'.format(len(crypter_decrypt_calls)))
+        self.assertEqual(
+            self.__mock_crypter.decrypt.call_count, 2,
+            'Expected 2 calls to crypter.decrypt(). Got {}'.format(self.__mock_crypter.decrypt.call_count)
+        )
         for call, record in zip(crypter_decrypt_calls, records):
             args, _ = call
             expected_args = (record['name_encrypted'], record['nonce'])
@@ -136,7 +139,7 @@ class TestUserTable(unittest.TestCase):
         # check
         cursor_execute_calls = mock_cursor.execute.call_args_list
         expected_args = ['PREPARE select_user_by_id', 'EXECUTE select_user_by_id']
-        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(len(cursor_execute_calls)))
+        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(mock_cursor.execute.call_count))
         for call, expected_arg in zip(cursor_execute_calls, expected_args):
             args, _ = call
             self.assertTrue(args[0].startswith(expected_arg), 'Expected call to cursor.execute() with {}. Got {}'.format(expected_arg, args[0]))
@@ -169,7 +172,7 @@ class TestUserTable(unittest.TestCase):
         # check
         cursor_execute_calls = mock_cursor.execute.call_args_list
         expected_args = ['PREPARE select_user_by_id', 'EXECUTE select_user_by_id']
-        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(len(cursor_execute_calls)))
+        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(mock_cursor.execute.call_count))
         for call, expected_arg in zip(cursor_execute_calls, expected_args):
             args, _ = call
             self.assertTrue(args[0].startswith(expected_arg), 'Expected call to cursor.execute() with {}. Got {}'.format(expected_arg, args[0]))
@@ -177,7 +180,10 @@ class TestUserTable(unittest.TestCase):
         self.assertEqual(mock_cursor.fetchone.call_count, 1, 'Expected 1 call to cursor.fetchone(). Got {}'.format(mock_cursor.fetchall.call_count))
 
         crypter_decrypt_call = self.__mock_crypter.decrypt.call_args_list
-        self.assertEqual(self.__mock_crypter.decrypt.call_count, 1, 'Expected 1 calls to crypter.decrypt(). Got {}'.format(len(crypter_decrypt_call)))
+        self.assertEqual(
+            self.__mock_crypter.decrypt.call_count, 1,
+            'Expected 1 calls to crypter.decrypt(). Got {}'.format(self.__mock_crypter.decrypt.call_count)
+        )
         args, _ = crypter_decrypt_call[0]
         expected_args = (record['name_encrypted'], record['nonce'])
         self.assertSequenceEqual(args, expected_args, 'Expected crypter.decrypt() call with parameter {}. Got {}'.format(expected_args, args))
@@ -201,7 +207,7 @@ class TestUserTable(unittest.TestCase):
         # check
         cursor_execute_calls = mock_cursor.execute.call_args_list
         expected_args = ['PREPARE select_user_by_name', 'EXECUTE select_user_by_name']
-        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(len(cursor_execute_calls)))
+        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(mock_cursor.execute.call_count))
         for call, expected_arg in zip(cursor_execute_calls, expected_args):
             args, _ = call
             self.assertTrue(args[0].startswith(expected_arg), 'Expected call to cursor.execute() with {}. Got {}'.format(expected_arg, args[0]))
@@ -234,7 +240,7 @@ class TestUserTable(unittest.TestCase):
         # check
         cursor_execute_calls = mock_cursor.execute.call_args_list
         expected_args = ['PREPARE select_user_by_name', 'EXECUTE select_user_by_name']
-        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(len(cursor_execute_calls)))
+        self.assertEqual(mock_cursor.execute.call_count, 2, 'Expected 2 calls to cursor.execute(). Got {}'.format(mock_cursor.execute.call_count))
         for call, expected_arg in zip(cursor_execute_calls, expected_args):
             args, _ = call
             self.assertTrue(args[0].startswith(expected_arg), 'Expected call to cursor.execute() with {}. Got {}'.format(expected_arg, args[0]))
@@ -242,7 +248,10 @@ class TestUserTable(unittest.TestCase):
         self.assertEqual(mock_cursor.fetchone.call_count, 1, 'Expected 1 call to cursor.fetchone(). Got {}'.format(mock_cursor.fetchall.call_count))
 
         crypter_decrypt_call = self.__mock_crypter.decrypt.call_args_list
-        self.assertEqual(self.__mock_crypter.decrypt.call_count, 1, 'Expected 1 calls to crypter.decrypt(). Got {}'.format(len(crypter_decrypt_call)))
+        self.assertEqual(
+            self.__mock_crypter.decrypt.call_count, 1,
+            'Expected 1 calls to crypter.decrypt(). Got {}'.format(self.__mock_crypter.decrypt.call_count)
+        )
         args, _ = crypter_decrypt_call[0]
         expected_args = (record['name_encrypted'], record['nonce'])
         self.assertSequenceEqual(args, expected_args, 'Expected crypter.decrypt() call with parameter {}. Got {}'.format(expected_args, args))
@@ -336,7 +345,7 @@ class TestUserTable(unittest.TestCase):
 
         cursor_execute_calls = mock_cursor.execute.call_args_list
         expected_args = ['PREPARE insert_user', 'EXECUTE insert_user', 'PREPARE select_user_by_name', 'EXECUTE select_user_by_name']
-        self.assertEqual(mock_cursor.execute.call_count, 4, 'Expected 4 calls to cursor.execute(). Got {}'.format(len(cursor_execute_calls)))
+        self.assertEqual(mock_cursor.execute.call_count, 4, 'Expected 4 calls to cursor.execute(). Got {}'.format(mock_cursor.execute.call_count))
         for call, expected_arg in zip(cursor_execute_calls, expected_args):
             args, _ = call
             self.assertTrue(args[0].startswith(expected_arg), 'Expected call to cursor.execute() with {}. Got {}'.format(expected_arg, args[0]))
@@ -345,7 +354,10 @@ class TestUserTable(unittest.TestCase):
         self.assertEqual(mock_cursor.fetchone.call_count, 1, 'Expected 1 call to cursor.fetchone(). Got {}'.format(mock_cursor.fetchall.call_count))
 
         crypter_decrypt_call = self.__mock_crypter.decrypt.call_args_list
-        self.assertEqual(self.__mock_crypter.decrypt.call_count, 1, 'Expected 1 calls to crypter.decrypt(). Got {}'.format(len(crypter_decrypt_call)))
+        self.assertEqual(
+            self.__mock_crypter.decrypt.call_count, 1,
+            'Expected 1 calls to crypter.decrypt(). Got {}'.format(self.__mock_crypter.decrypt.call_count)
+        )
         args, _ = crypter_decrypt_call[0]
         expected_args = (record_after['name_encrypted'], record_after['nonce'])
         self.assertSequenceEqual(args, expected_args, 'Expected crypter.decrypt() call with parameter {}. Got {}'.format(expected_args, args))
@@ -389,7 +401,7 @@ class TestUserTable(unittest.TestCase):
 
         cursor_execute_calls = mock_cursor.execute.call_args_list
         expected_args = ['PREPARE update_user', 'EXECUTE update_user', 'PREPARE select_user_by_name', 'EXECUTE select_user_by_name']
-        self.assertEqual(mock_cursor.execute.call_count, 4, 'Expected 4 calls to cursor.execute(). Got {}'.format(len(cursor_execute_calls)))
+        self.assertEqual(mock_cursor.execute.call_count, 4, 'Expected 4 calls to cursor.execute(). Got {}'.format(mock_cursor.execute.call_count))
         for call, expected_arg in zip(cursor_execute_calls, expected_args):
             args, _ = call
             self.assertTrue(args[0].startswith(expected_arg), 'Expected call to cursor.execute() with {}. Got {}'.format(expected_arg, args[0]))
@@ -398,7 +410,10 @@ class TestUserTable(unittest.TestCase):
         self.assertEqual(mock_cursor.fetchone.call_count, 1, 'Expected 1 call to cursor.fetchone(). Got {}'.format(mock_cursor.fetchall.call_count))
 
         crypter_decrypt_call = self.__mock_crypter.decrypt.call_args_list
-        self.assertEqual(self.__mock_crypter.decrypt.call_count, 1, 'Expected 1 calls to crypter.decrypt(). Got {}'.format(len(crypter_decrypt_call)))
+        self.assertEqual(
+            self.__mock_crypter.decrypt.call_count, 1,
+            'Expected 1 calls to crypter.decrypt(). Got {}'.format(self.__mock_crypter.decrypt.call_count)
+        )
         args, _ = crypter_decrypt_call[0]
         expected_args = (record_after['name_encrypted'], record_after['nonce'])
         self.assertSequenceEqual(args, expected_args, 'Expected crypter.decrypt() call with parameter {}. Got {}'.format(expected_args, args))
