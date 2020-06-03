@@ -12,3 +12,10 @@ class DbMigratorEntity():
 
     def get_applied_at(self):
         return self.__applied_at
+
+    def to_dict(self):
+        return {
+            'id': self.__id,
+            'filename': self.__filename,
+            'applied_at': self.__applied_at
+        }
