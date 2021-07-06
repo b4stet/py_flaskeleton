@@ -4,13 +4,9 @@ import psycopg2.extras
 
 
 class DbConnectorService():
-    def __init__(self, config, mode):
+    def __init__(self, config):
         self.__config = config
-        self.__mode = mode
-
-    def init_app(self, app):
-        if self.__mode == 'web':
-            app.teardown_request(self.disconnect)
+        self.__plans = []
 
     def connection(self):
         if 'db' not in g:
@@ -30,6 +26,13 @@ class DbConnectorService():
         return self.connection().cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     def disconnect(self, err):
+        self.__plans = []
         db = g.pop('db', None)
         if db is not None:
-            g.db.close()
+            db.close()
+
+    def get_plans(self):
+        return self.__plans
+
+    def add_plan(self, plan):
+        self.__plans.append(plan)

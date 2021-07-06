@@ -30,23 +30,17 @@ class ErrorHandlerService():
         error_value = str(error).split('\n')[0]
         error_log = '[{}] {}: {}'.format(error_location, error_type, error_value)
 
-        # always log full stack trace
-        # 400, 404, 403, ... (= client error) as warning
-        # 500 (= application error) as error
-        if status_code == 500:
+        # logging: full stack trace
+        # 4xx as warning
+        # 5xx as error
+        if 500 <= status_code < 600:
             self.__logger.error(error_log, exc_info=True)
         else:
             self.__logger.warning(error_log, exc_info=True)
 
-        # in dev env: full error_log to client
-        # in other env: neutral message to client
-        if self.__env == 'dev':
-            response = Response(code=status_code, result=error_log)
-
-        else:
-            if status_code == 500:
-                response = Response(code=status_code, result='Internal server error.')
-            else:
-                response = Response(code=status_code, result=str(error))
+        # reponse
+        response = Response(code=status_code, result=str(error))
+        if 500 <= status_code < 600:
+            response = Response(code=status_code, result='Server error.')
 
         return response.to_json(), status_code

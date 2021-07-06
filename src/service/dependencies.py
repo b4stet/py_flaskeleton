@@ -24,21 +24,23 @@ class DependenciesService():
         self.__logger = current_app.logger
         self.__crypter = g.crypto['crypter']
         self.__hasher = g.crypto['hasher']
-        self.__db_config = current_app.config['db']
         self.__mode = current_app.config['mode']
+        self.__db_connector = DbConnectorService(current_app.config['db'])
+        self.__migration_dir = os.path.join(current_app.instance_path, 'migration')
 
     def init_app(self, app):
         self.register()
+
+        if self.__mode == 'web':
+            app.teardown_request(self.__db_connector.disconnect)
 
     def register(self):
         input_validator = InputValidator()
         user_validator = UserValidator()
         time_converter = TimeConverter()
-        migration_dir = os.path.join(current_app.instance_path, 'migration')
 
-        db_connector = DbConnectorService(self.__db_config, self.__mode)
-        user_table = UserTable(self.__crypter, self.__hasher, db_connector, self.__logger)
-        migrator_table = DbMigratorTable(db_connector, self.__logger)
+        user_table = UserTable(self.__crypter, self.__hasher, self.__db_connector, self.__logger)
+        migrator_table = DbMigratorTable(self.__db_connector, self.__logger)
 
         user_bo = UserBo(time_converter, self.__hasher, user_table, self.__logger)
         migrator_bo = DbMigratorBo(migrator_table, self.__logger)
@@ -48,7 +50,7 @@ class DependenciesService():
                 UserAuthorizationMiddleware: UserAuthorizationMiddleware(self.__hasher, user_bo, self.__logger).check,
                 GetIndexAction: GetIndexAction.as_view('get_index', self.__logger),
                 ListUsersAction: ListUsersAction.as_view('list_users', time_converter, user_bo, self.__logger),
-                DbManagerCli: DbManagerCli(migration_dir, migrator_bo, self.__logger),
+                DbManagerCli: DbManagerCli(self.__migration_dir, migrator_bo, self.__logger),
                 UserManagerCli: UserManagerCli(input_validator, user_validator, time_converter, user_bo, self.__logger),
             }
 

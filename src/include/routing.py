@@ -16,7 +16,8 @@ routing = {
     },
 
     'user': {
-        'middlewares': [UserAuthorizationMiddleware],
+        # 'middlewares': [UserAuthorizationMiddleware],
+        'middlewares': [],
         'routes': [
             {
                 'uri': '/user/list',
