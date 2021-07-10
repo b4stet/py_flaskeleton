@@ -1,4 +1,5 @@
 import string
+import copy
 
 
 class UserEntity():
@@ -29,7 +30,7 @@ class UserEntity():
         }
 
     def to_safe(self):
-        safe = self
+        safe = copy.deepcopy(self)
         safe.set_password(None)
         safe.set_salt(None)
         return safe
